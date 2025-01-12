@@ -1,0 +1,76 @@
+.fee-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.step-card {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .fee-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .row {
+    gap: 16px; 
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  
+  .field-flex {
+    flex: 1;
+    margin-right: 1rem;
+    min-width: 200px;
+  }
+  
+  .field-flex:last-child {
+    margin-right: 0; /* remove margin on the last field in a row */
+  }
+  
+  .field-hijri {
+    margin-bottom: 1rem;
+  }
+  
+  .notes-field {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .fee-details-container {
+    margin-top: 1rem;
+  }
+  
+  .fee-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  
+  .fee-row > * {
+    margin-right: 1rem;
+  }
+  
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }.parties{
+    margin-top: 10px;
+  }
+  

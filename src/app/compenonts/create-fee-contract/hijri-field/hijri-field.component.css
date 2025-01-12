@@ -1,0 +1,3 @@
+.mat-mdc-form-field.mat-mdc-form-field {
+  display: block !important; /* Use more specific selectors */
+}

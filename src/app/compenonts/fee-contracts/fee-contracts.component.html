@@ -1,0 +1,117 @@
+<div class="fee-details-header">
+  <!-- Left Section -->
+  <div class="header-left">
+    <button mat-button color="primary" class="add-button" (click)="navigateToFeeContract()">
+      {{ currentLang === 'ar' ? 'إضافة جديد' : 'New' }}
+    </button>
+  </div>
+
+  <!-- Center Title -->
+  <h2 class="fee-title">
+    {{ currentLang === 'ar' ? 'تفاصيل العقود' : 'Fee Details' }}
+  </h2>
+
+  <!-- Right Section -->
+  <div class="header-right">
+    <button mat-stroked-button class="language-button" (click)="toggleLanguage()">
+      {{ currentLang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية' }}
+    </button>
+    <button mat-stroked-button color="warn" class="logout-button" (click)="logout()">
+      {{ currentLang === 'ar' ? 'تسجيل الخروج' : 'Logout' }}
+    </button>
+  </div>
+</div>
+
+
+<div class="table-container">
+  <table mat-table [dataSource]="dataSource" matSort class="custom-table">
+    <!-- Contract Title Column -->
+    <ng-container matColumnDef="contractTitle">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'عنوان العقد' : 'Contract Title' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.contractTitle }}</td>
+    </ng-container>
+
+    <!-- Contract Name Column -->
+    <ng-container matColumnDef="contractName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'اسم العقد' : 'Contract Name' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.contractName }}</td>
+    </ng-container>
+
+    <!-- Branch Name Column -->
+    <ng-container matColumnDef="branchName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'اسم الفرع' : 'Branch Name' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.branchName }}</td>
+    </ng-container>
+
+    <!-- Branch Representative Name Column -->
+    <ng-container matColumnDef="branchRepName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'اسم ممثل الفرع' : 'Branch Representative' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.branchRepName }}</td>
+    </ng-container>
+
+    <!-- Start Date Column -->
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'تاريخ البداية' : 'Start Date' }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.startDate | date: 'yyyy-MM-dd' }}
+      </td>
+    </ng-container>
+
+    <!-- End Date Column -->
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'تاريخ النهاية' : 'End Date' }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.endDate | date: 'yyyy-MM-dd' }}
+      </td>
+    </ng-container>
+
+    <!-- Second Party Name Column -->
+    <ng-container matColumnDef="secondPartyName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'اسم الطرف الثاني' : 'Second Party Name' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.secondPartyName }}</td>
+    </ng-container>
+
+    <!-- Type of Second Party Column -->
+    <ng-container matColumnDef="secondPartyType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ currentLang === 'ar' ? 'نوع الطرف الثاني' : 'Type of Second Party' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.secondPartyType }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ currentLang === 'ar' ? 'الإجراءات' : 'Actions' }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Table Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+</div>

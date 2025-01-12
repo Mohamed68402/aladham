@@ -1,0 +1,43 @@
+<mat-card class="file-upload-card">
+  <mat-card-title>{{ currentLanguage === 'ar' ? 'تحميل المرفقات' : 'Upload Attachments' }}</mat-card-title>
+  <mat-card-content>
+    <!-- File Input -->
+    <div class="file-input-container">
+      <input type="file" (change)="onFileSelected($event)" multiple />
+    </div>
+  
+    <!-- Selected Files List -->
+    <div *ngIf="selectedFiles.length > 0" class="file-list">
+      <h4>{{ currentLanguage === 'ar' ? 'الملفات المختارة:' : 'Selected Files:' }}</h4>
+      <ul>
+        <li *ngFor="let file of selectedFiles; let i = index" class="file-item">
+          <span>{{ file.name }}</span>
+          <button mat-icon-button color="warn" (click)="removeFile(i)" aria-label="Remove File">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </mat-card-content>
+
+  <!-- Submit Button and Spinner -->
+  <mat-card-actions class="card-actions">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      [disabled]="selectedFiles.length === 0 || isUploading" 
+      (click)="uploadFiles()" 
+      class="shared-button">
+      {{ currentLanguage === 'ar' ? 'إرسال' : 'Submit' }}
+    </button>
+    
+    <mat-progress-spinner
+      *ngIf="isUploading"
+      diameter="30"
+      mode="indeterminate"
+      color="primary"
+      class="spinner"
+    ></mat-progress-spinner>
+  </mat-card-actions>
+</mat-card>
+

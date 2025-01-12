@@ -1,0 +1,245 @@
+<div class="stepper-header">
+  <div class="fee-details-header">
+    <!-- Left Section -->
+    <div class="header-left">
+      <button mat-button color="primary" class="add-button" (click)="navigateToFeeContract()">
+        {{ currentLanguage === 'ar' ? 'العودة لجميع العقود' : 'Return To All Fee' }}
+      </button>
+    </div>
+  
+    <!-- Center Title -->
+    <h2 class="fee-title">
+      {{ currentLanguage === 'ar' ? 'إدارة العقود' : 'Manage Contracts' }}
+    </h2>
+  
+    <!-- Right Section -->
+    <div class="header-right">
+      <button mat-stroked-button class="language-button" (click)="toggleLanguage()">
+        {{ currentLanguage === 'ar' ? 'Switch to English' : 'التبديل إلى العربية' }}
+      </button>
+    </div>
+  </div>
+
+<mat-vertical-stepper [linear]="true" #stepper>
+  <!-- Step 1: Contract Details -->
+  <mat-step
+    [stepControl]="contractDetailsForm"
+    [label]="currentLanguage === 'ar' ? 'تفاصيل العقد' : 'Contract Details'"
+    [editable]="false"
+    [completed]="false"
+  >
+    <mat-card class="step-card">
+      <mat-card-title>
+        {{ currentLanguage === 'ar' ? 'تفاصيل العقد' : 'Contract Details' }}
+      </mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="contractDetailsForm" class="form-container">
+          <div class="row">
+            <!-- Contract Name -->
+            <mat-form-field class="field-flex" appearance="outline">
+              <mat-label>{{ currentLanguage === 'ar' ? 'اسم العقد' : 'Contract Name' }}</mat-label>
+              <input matInput formControlName="contractName" />
+              <mat-error *ngIf="contractDetailsForm.get('contractName')?.hasError('required')">
+                {{ currentLanguage === 'ar' ? 'اسم العقد مطلوب' : 'Contract Name is required.' }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Type of Parties -->
+            <mat-form-field class="field-flex" appearance="outline">
+              <mat-label>{{ currentLanguage === 'ar' ? 'نوع الأطراف' : 'Type of Parties' }}</mat-label>
+              <mat-select formControlName="typeOfParties">
+                <mat-option value="Individual">{{ currentLanguage === 'ar' ? 'فرد' : 'Individual' }}</mat-option>
+                <mat-option value="Organization">{{ currentLanguage === 'ar' ? 'شركة' : 'Organization' }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="contractDetailsForm.get('typeOfParties')?.hasError('required')">
+                {{ currentLanguage === 'ar' ? 'نوع الأطراف مطلوب' : 'Type of Parties is required.' }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Branch Selection -->
+          <div class="row">
+            <mat-form-field class="field-flex" appearance="outline">
+              <mat-label>{{ currentLanguage === 'ar' ? 'اختر الفرع' : 'Select Branch' }}</mat-label>
+              <mat-select formControlName="branch">
+                <mat-option *ngFor="let branch of branches" [value]="branch">
+                  {{ branch.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="contractDetailsForm.get('branch')?.hasError('required')">
+                {{ currentLanguage === 'ar' ? 'اختيار الفرع مطلوب' : 'Branch selection is required.' }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Dates -->
+          <div class="row">
+            <!-- Start Date (Gregorian) -->
+            <mat-form-field class="field-flex" appearance="outline">
+              <mat-label>{{ currentLanguage === 'ar' ? 'تاريخ البدء (ميلادي)' : 'Start Date (Gregorian)' }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="gregorianStartPicker"
+                formControlName="startDateGregorian"
+                (dateChange)="onGregorianDateChange('startDateGregorian', $event)"
+              />
+              <mat-error *ngIf="contractDetailsForm.get('startDateGregorian')?.hasError('required')">
+                {{ currentLanguage === 'ar' ? 'تاريخ البدء مطلوب' : 'Start Date is required.' }}
+              </mat-error>
+              <mat-datepicker-toggle matSuffix [for]="gregorianStartPicker"></mat-datepicker-toggle>
+              <mat-datepicker #gregorianStartPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- End Date (Gregorian) -->
+            <mat-form-field class="field-flex" appearance="outline">
+              <mat-label>{{ currentLanguage === 'ar' ? 'تاريخ النهاية (ميلادي)' : 'End Date (Gregorian)' }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="gregorianEndPicker"
+                formControlName="endDateGregorian"
+                (dateChange)="onGregorianDateChange('endDateGregorian', $event)"
+              />
+              <mat-error *ngIf="contractDetailsForm.get('endDateGregorian')?.hasError('required')">
+                {{ currentLanguage === 'ar' ? 'تاريخ النهاية مطلوب' : 'End Date is required.' }}
+              </mat-error>
+              <mat-datepicker-toggle matSuffix [for]="gregorianEndPicker"></mat-datepicker-toggle>
+              <mat-datepicker #gregorianEndPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Hijri Dates -->
+          <div class="row">
+            <div class="field-hijri field-flex">
+              <app-hijri-field
+                [label]="currentLanguage === 'ar' ? 'تاريخ البدء (هجري)' : 'Start Date (Hijri)'"
+                [dateControl]="startDateHijriControl"
+                (dateChange)="onChildHijriDateChange('startDateHijri', $event)"
+              ></app-hijri-field>
+            </div>
+
+            <div class="field-hijri field-flex">
+              <app-hijri-field
+                [label]="currentLanguage === 'ar' ? 'تاريخ النهاية (هجري)' : 'End Date (Hijri)'"
+                [dateControl]="endDateHijriControl"
+                (dateChange)="onChildHijriDateChange('endDateHijri', $event)"
+              ></app-hijri-field>
+            </div>
+          </div>
+          
+  <!-- Fee Details -->
+  <div class="fee-details-container">
+    <div formArrayName="feeDetails">
+      <div
+                *ngFor="let fee of feeDetailsArray.controls; let i = index"
+                [formGroupName]="i"
+                class="fee-row"
+              >
+              <mat-form-field class="field-flex" appearance="outline">
+                <mat-label>Fee Type</mat-label>
+                <mat-select formControlName="type" aria-label="Fee Type">
+                  <mat-option *ngFor="let type of feeTypes" [value]="type.id">
+                    {{ type.value }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="fee.get('type')?.hasError('required')">
+                  Fee Type is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="field-flex" appearance="outline">
+                <mat-label>Amount</mat-label>
+                <input matInput type="number" formControlName="amount" aria-label="Amount" />
+                <mat-error *ngIf="fee.get('amount')?.hasError('required')">
+                  Amount is required.
+                </mat-error>
+                <mat-error *ngIf="fee.get('amount')?.hasError('min')">
+                  Amount must be 0 or greater.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="field-flex" appearance="outline">
+                <mat-label>GRE Due Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="grePicker"
+                  formControlName="greDueDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="grePicker"></mat-datepicker-toggle>
+                <mat-datepicker #grePicker></mat-datepicker>
+                <mat-error *ngIf="fee.get('greDueDate')?.hasError('required')">
+                  GRE Due Date is required.
+                </mat-error>
+                <mat-error *ngIf="fee.get('greDueDate')?.hasError('mismatch')">
+                  GRE Due Date must match the End Date (Gregorian).
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="field-flex" appearance="outline">
+                <mat-label>HIJ Due Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="hijPicker"
+                  formControlName="hijDueDate"
+                />
+                <mat-datepicker-toggle matSuffix [for]="hijPicker"></mat-datepicker-toggle>
+                <mat-datepicker #hijPicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="notes-field" appearance="outline">
+                <mat-label>Notes</mat-label>
+                <textarea
+                  matInput
+                  formControlName="notes"
+                  aria-label="Notes"
+                  rows="3"
+                ></textarea>
+              </mat-form-field>
+
+              </div>
+    </div>
+ </div>
+        </form>
+      </mat-card-content>
+      <mat-card-actions class="card-actions">
+        <button mat-raised-button color="primary" (click)="onNext()">
+          {{ currentLanguage === 'ar' ? 'التالي' : 'Next' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-step>
+
+  <!-- Step 2: Create Parties -->
+  <mat-step
+    [label]="currentLanguage === 'ar' ? 'إنشاء الأطراف' : 'Create Parties'"
+    [editable]="false"
+    [completed]="partyCreated"
+  >
+    <mat-card class="step-card">
+      <mat-card-title>
+        {{ currentLanguage === 'ar' ? 'إنشاء الأطراف' : 'Create Parties' }}
+      </mat-card-title>
+      <mat-card-content>
+        <app-create-parties
+        [feeContractId]="feeContractId"
+        [typeOfParties]="typeOfParties"
+        (formSubmitted)="onChildFormSubmitted(stepper)"
+      ></app-create-parties>
+      </mat-card-content>
+    </mat-card>
+  </mat-step>
+
+  <!-- Step 3: Upload Files -->
+  <mat-step
+    [label]="currentLanguage === 'ar' ? 'رفع الملفات' : 'Upload Files'"
+    [editable]="partyCreated"
+  >
+    <mat-card class="step-card">
+      <mat-card-title>
+        {{ currentLanguage === 'ar' ? 'رفع الملفات' : 'Upload Files' }}
+      </mat-card-title>
+      <mat-card-content>
+        <app-upload-files [feeContractId]="feeContractId"></app-upload-files>
+      </mat-card-content>
+    </mat-card>
+  </mat-step>
+</mat-vertical-stepper>

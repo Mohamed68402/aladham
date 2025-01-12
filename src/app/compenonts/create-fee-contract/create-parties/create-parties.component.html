@@ -1,0 +1,110 @@
+<mat-card class="parties-card">
+  <mat-card-content>
+    <form [formGroup]="createPartiesForm" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- First Party Fields -->
+      <h3 class="section-title">{{ currentLanguage === 'ar' ? 'الطرف الأول' : 'First Party' }}</h3>
+      <div class="row fields-container">
+        <mat-form-field class="field-flex" appearance="outline">
+          <mat-label>{{ currentLanguage === 'ar' ? 'اسم ممثل الشركة' : 'Representative Name' }}</mat-label>
+          <input matInput formControlName="representativeName" />
+          <mat-error *ngIf="createPartiesForm.get('representativeName')?.hasError('required')">
+            {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="field-flex" appearance="outline">
+          <mat-label>{{ currentLanguage === 'ar' ? 'هوية ممثل الشركة' : 'Representative Identity' }}</mat-label>
+          <input matInput formControlName="representativeIdentity" />
+          <mat-error *ngIf="createPartiesForm.get('representativeIdentity')?.hasError('required')">
+            {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="field-flex" appearance="outline">
+          <mat-label>{{ currentLanguage === 'ar' ? 'هاتف ممثل الشركة' : 'Representative Phone' }}</mat-label>
+          <input matInput formControlName="representativePhone" />
+          <mat-error *ngIf="createPartiesForm.get('representativePhone')?.hasError('required')">
+            {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Second Party Fields for Individual -->
+      <div *ngIf="typeOfParties === 'Individual'">
+        <h3 class="section-title">{{ currentLanguage === 'ar' ? 'الطرف الثاني' : 'Second Party' }}</h3>
+        <div class="row fields-container">
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? 'اختر العميل' : 'Select Customer' }}</mat-label>
+            <mat-select formControlName="customerId">
+              <mat-option *ngFor="let customer of customers" [value]="customer.id">
+                {{ customer.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="createPartiesForm.get('customerId')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Second Party Fields for Organization -->
+      <div *ngIf="typeOfParties === 'Organization'">
+        <h3 class="section-title">{{ currentLanguage === 'ar' ? 'الطرف الثاني' : 'Second Party' }}</h3>
+        <div class="row fields-container">
+          <!-- Organization Name -->
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? 'اسم الشركة' : 'Organization Name' }}</mat-label>
+            <input matInput formControlName="organizationName" />
+            <mat-error *ngIf="createPartiesForm.get('organizationName')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+      
+          <!-- Commercial Registration Number -->
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? 'رقم التسجيل التجاري' : 'Commercial Registration Number' }}</mat-label>
+            <input matInput formControlName="commercialRegistrationNumber" />
+            <mat-error *ngIf="createPartiesForm.get('commercialRegistrationNumber')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row fields-container">
+          <!-- Representative Name -->
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? 'اسم ممثل الشركة' : 'Representative Name' }}</mat-label>
+            <input matInput formControlName="representativeName" />
+            <mat-error *ngIf="createPartiesForm.get('representativeName')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+      
+          <!-- Representative Identity -->
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? 'هوية ممثل الشركة' : 'Representative Identity' }}</mat-label>
+            <input matInput formControlName="representativeIdentity" />
+            <mat-error *ngIf="createPartiesForm.get('representativeIdentity')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+      
+          <!-- Representative Phone -->
+          <mat-form-field class="field-flex" appearance="outline">
+            <mat-label>{{ currentLanguage === 'ar' ? ' هاتف ممثل الشركة' : 'Representative Phone' }}</mat-label>
+            <input matInput formControlName="representativePhone" />
+            <mat-error *ngIf="createPartiesForm.get('representativePhone')?.hasError('required')">
+              {{ currentLanguage === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required' }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <!-- Card actions -->
+  <mat-card-actions class="card-actions">
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" class="shared-button">
+      {{ currentLanguage === 'ar' ? 'إرسال' : 'next' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

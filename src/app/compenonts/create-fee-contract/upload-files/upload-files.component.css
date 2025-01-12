@@ -1,0 +1,63 @@
+.file-upload-card {
+  margin: 2rem auto;
+  padding: 2rem;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f9f9f9;
+
+  .file-input-container {
+      margin-bottom: 1.5rem;
+  }
+
+  mat-card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+  }
+
+  h4 {
+      margin: 1.5rem 0 1rem;
+      font-weight: 500;
+  }
+
+  ul {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+          padding: 0.5rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background-color: #fff;
+
+          button {
+              margin-left: 0.5rem;
+          }
+      }
+  }
+
+  .card-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+
+      button {
+          width: 100%;
+          max-width: 200px;
+          height: 3rem;
+      }
+  }
+}  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  
