@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
@@ -29,6 +30,7 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
   feeTypes: any[] = [];
   startDateHijriControl!: FormControl;
   endDateHijriControl!: FormControl;
+  hijDueDateControl = new FormControl('');
   feeContractId!: number;
   typeOfParties!: string;
   showCreateParties = false;
@@ -81,8 +83,8 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
   }
   createFeeDetail(): FormGroup {
     return this.fb.group({
-      greDueDate: [{ value: null, disabled: true }, Validators.required],
-      hijDueDate: [{ value: null, disabled: true }, Validators.required],
+      greDueDate: [null, Validators.required],
+      hijDueDate: [null, Validators.required],
       type: [null, Validators.required], // Changed from 'feeType' to 'type'
       amount: [0, [Validators.required, Validators.min(1)]],
       notes: [null, Validators.required],
@@ -127,13 +129,6 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
 
     // Convert the Gregorian date to a "hijriDate" if needed
     const hijriDate = moment(gregDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
-    if (controlName === 'endDateGregorian') {
-      const greDueDateControl = feeDetailsArray.at(0).get('greDueDate'); // Adjust index as needed
-      greDueDateControl?.setValue(gregDate);
-      const hijriDate1 = moment(gregDate, 'YYYY-MM-DD').format('iYYYY-iMM-iDD');
-      const hijiDueDateControl = feeDetailsArray.at(0).get('hijDueDate'); // Adjust index as needed
-      hijiDueDateControl?.setValue(hijriDate1);
-    }
     const hijriControlName = controlName.replace('Gregorian', 'Hijri');
 
     try {
@@ -160,12 +155,7 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
     ) as FormArray;
 
     const gregDate = moment(hijriDate, 'iYYYY-iMM-iDD').format('YYYY-MM-DD');
-    if (controlName === 'endDateHijri') {
-      const hijiDueDateControl = feeDetailsArray.at(0).get('hijDueDate'); // Adjust index as needed
-      const greDueDateControl = feeDetailsArray.at(0).get('greDueDate'); // Adjust index as needed
-      greDueDateControl?.setValue(gregDate);
-      hijiDueDateControl?.setValue(hijriDate);
-    }
+    
     const gregControlName = controlName.replace('Hijri', 'Gregorian');
 
     // Patch the parent's form
@@ -176,8 +166,8 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
   addFee(): void {
     this.feeDetailsArray.push(
       this.fb.group({
-        greDueDate: [{ value: null, disabled: true }, Validators.required],
-        hijDueDate: [{ value: null, disabled: true }, Validators.required],
+        greDueDate: [null, Validators.required],
+        hijDueDate: [null, Validators.required],
         type: [null, Validators.required],
         amount: [null, [Validators.required, Validators.min(0)]],
         notes: [null, Validators.required],
@@ -222,17 +212,19 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
         'iYYYY-iMM-iDD'
       ),
       typeOfParties: rawFormValue.typeOfParties,
-      newFeeDetailsDtos: rawFormValue.feeDetails.map((fee: any) => ({
-        greDueDate: fee.greDueDate
-          ? moment(fee.greDueDate).format('YYYY-MM-DDTHH:mm:ss.SSS')
-          : null,
-        hijDueDate: fee.hijDueDate
-          ? moment(fee.hijDueDate, 'YYYY-MM-DD').format('YYYY-MM-DD')
-          : null,
-        feeType: fee.type,
-        amount: fee.amount,
-        notes: fee.notes,
-      })),
+      newFeeDetailsDtos: Array.isArray(rawFormValue.feeDetails)
+      ? rawFormValue.feeDetails.map((fee: any) => ({
+          greDueDate: fee.greDueDate
+            ? moment(fee.greDueDate).format('YYYY-MM-DDTHH:mm:ss.SSS')
+            : null,
+          hijDueDate: fee.hijDueDate
+            ? moment(fee.hijDueDate, 'YYYY-MM-DD').format('iYYYY-iMM-iDD')
+            : null,
+          feeType: fee.type || '', // Ensure type is included, default to empty string if missing
+          amount: fee.amount || 0, // Ensure amount is a number, default to 0 if missing
+          notes: fee.notes || '', // Default to empty string if notes are not provided
+        }))
+      : [], 
     };
 
     const submitSubscription= this.feeContractServ.sendContractData(payload).subscribe({
@@ -267,5 +259,51 @@ export class CreateFeeContractComponent implements OnInit,OnDestroy {
     this.router.navigate(["FeeDetails"])
   }ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+
+  onFeeGregorianDateChange(index: number, event: any): void {
+    const feeDetailsArray = this.contractDetailsForm.get('feeDetails') as FormArray;
+  
+    const gregDate = event?.value ? moment(event.value).format('YYYY-MM-DD') : null;
+  
+    // If no valid date was chosen, just return
+    if (!gregDate || !moment(gregDate, 'YYYY-MM-DD', true).isValid()) {
+      return;
+    }
+  
+    // Convert the Gregorian date to a Hijri date
+    const hijriDate = moment(gregDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+  
+    try {
+      // Update the Hijri date in the FormArray
+      feeDetailsArray.at(index).patchValue({ hijDueDate: hijriDate });
+    } catch (error) {
+      console.error('Error updating Hijri date for fee row:', error);
+    }
+  }
+  
+
+  onFeeHijriDateChange(index: number, hijriDate: string) {
+    if (!hijriDate || !moment(hijriDate, 'iYYYY-iMM-iDD', true).isValid()) {
+      console.error('Invalid Hijri Date:', hijriDate);
+      return;
+    }
+  
+    const feeDetailsArray = this.contractDetailsForm.get('feeDetails') as FormArray;
+  
+    // Convert Hijri date to Gregorian date
+    const gregDate = moment(hijriDate, 'iYYYY-iMM-iDD').format('YYYY-MM-DD');
+  
+    try {
+      // Update only the current fee row's Gregorian date
+      feeDetailsArray.at(index).patchValue({ greDueDate: gregDate });
+    } catch (error) {
+      console.error('Error updating Gregorian date for fee row:', error);
+    }
+  }getHijDueDateControl(index: number): FormControl {
+    const feeDetailsArray = this.contractDetailsForm.get('feeDetails') as FormArray;
+    const feeGroup = feeDetailsArray.at(index) as FormGroup;
+    return feeGroup.get('hijDueDate') as FormControl || new FormControl('');
   }
 }

@@ -127,77 +127,87 @@
           </div>
           
   <!-- Fee Details -->
-  <div class="fee-details-container">
-    <div formArrayName="feeDetails">
-      <div
-                *ngFor="let fee of feeDetailsArray.controls; let i = index"
-                [formGroupName]="i"
-                class="fee-row"
-              >
-              <mat-form-field class="field-flex" appearance="outline">
-                <mat-label>Fee Type</mat-label>
-                <mat-select formControlName="type" aria-label="Fee Type">
-                  <mat-option *ngFor="let type of feeTypes" [value]="type.id">
-                    {{ type.value }}
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="fee.get('type')?.hasError('required')">
-                  Fee Type is required.
-                </mat-error>
-              </mat-form-field>
+<!-- Fee Details Section -->
+<div class="fee-details-container">
+  <div formArrayName="feeDetails">
+    <!-- Loop through the fee details FormArray -->
+    <div
+      *ngFor="let fee of feeDetailsArray.controls; let i = index"
+      [formGroupName]="i"
+      class="fee-row"
+    >
+      <!-- Fee Type -->
+      <mat-form-field class="field-flex" appearance="outline">
+        <mat-label>Fee Type</mat-label>
+        <mat-select formControlName="type" aria-label="Fee Type">
+          <mat-option *ngFor="let type of feeTypes" [value]="type.id">
+            {{ type.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="fee.get('type')?.hasError('required')">
+          Fee Type is required.
+        </mat-error>
+      </mat-form-field>
 
-              <mat-form-field class="field-flex" appearance="outline">
-                <mat-label>Amount</mat-label>
-                <input matInput type="number" formControlName="amount" aria-label="Amount" />
-                <mat-error *ngIf="fee.get('amount')?.hasError('required')">
-                  Amount is required.
-                </mat-error>
-                <mat-error *ngIf="fee.get('amount')?.hasError('min')">
-                  Amount must be 0 or greater.
-                </mat-error>
-              </mat-form-field>
+      <!-- Amount -->
+      <mat-form-field class="field-flex" appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input matInput type="number" formControlName="amount" aria-label="Amount" />
+        <mat-error *ngIf="fee.get('amount')?.hasError('required')">
+          Amount is required.
+        </mat-error>
+        <mat-error *ngIf="fee.get('amount')?.hasError('min')">
+          Amount must be 0 or greater.
+        </mat-error>
+      </mat-form-field>
 
-              <mat-form-field class="field-flex" appearance="outline">
-                <mat-label>GRE Due Date</mat-label>
-                <input
-                  matInput
-                  [matDatepicker]="grePicker"
-                  formControlName="greDueDate"
-                />
-                <mat-datepicker-toggle matSuffix [for]="grePicker"></mat-datepicker-toggle>
-                <mat-datepicker #grePicker></mat-datepicker>
-                <mat-error *ngIf="fee.get('greDueDate')?.hasError('required')">
-                  GRE Due Date is required.
-                </mat-error>
-                <mat-error *ngIf="fee.get('greDueDate')?.hasError('mismatch')">
-                  GRE Due Date must match the End Date (Gregorian).
-                </mat-error>
-              </mat-form-field>
+      <!-- GRE Due Date -->
+      <mat-form-field class="field-flex" appearance="outline">
+        <mat-label>GRE Due Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="grePicker"
+          formControlName="greDueDate"
+          (dateChange)="onFeeGregorianDateChange(i, $event)"
+        />
+        <mat-datepicker-toggle matSuffix [for]="grePicker"></mat-datepicker-toggle>
+        <mat-datepicker #grePicker></mat-datepicker>
+        <mat-error *ngIf="fee.get('greDueDate')?.hasError('required')">
+          GRE Due Date is required.
+        </mat-error>
+      </mat-form-field>
 
-              <mat-form-field class="field-flex" appearance="outline">
-                <mat-label>HIJ Due Date</mat-label>
-                <input
-                  matInput
-                  [matDatepicker]="hijPicker"
-                  formControlName="hijDueDate"
-                />
-                <mat-datepicker-toggle matSuffix [for]="hijPicker"></mat-datepicker-toggle>
-                <mat-datepicker #hijPicker></mat-datepicker>
-              </mat-form-field>
+      <!-- HIJ Due Date -->
+      <app-hijri-field
+      [label]="currentLanguage === 'ar' ? 'تاريخ النهاية (هجري)' : 'HIJ Due Date'"
+      [dateControl]="getHijDueDateControl(i)"
+      (dateChange)="onFeeHijriDateChange(i, $event)"
+    ></app-hijri-field>
 
-              <mat-form-field class="notes-field" appearance="outline">
-                <mat-label>Notes</mat-label>
-                <textarea
-                  matInput
-                  formControlName="notes"
-                  aria-label="Notes"
-                  rows="3"
-                ></textarea>
-              </mat-form-field>
+      <!-- Notes -->
+      <mat-form-field class="notes-field" appearance="outline">
+        <mat-label>Notes</mat-label>
+        <textarea
+          matInput
+          formControlName="notes"
+          aria-label="Notes"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
 
-              </div>
+      <!-- Delete Fee Button -->
+      <button mat-button color="warn" (click)="removeFee(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
- </div>
+  </div>
+
+  <!-- Add Fee Button -->
+  <button mat-raised-button color="primary" (click)="addFee()">
+    Add Fee
+  </button>
+</div>
+
         </form>
       </mat-card-content>
       <mat-card-actions class="card-actions">
